@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { createSale } from '../services/sales'
-import { toast } from 'react-hot-toast'
 import { FiCheckCircle } from 'react-icons/fi'
 
 function SuccessModal({ onClose }) {
@@ -51,9 +50,23 @@ export default function Cart() {
   const [code, setCode] = useState('')
   const [msg, setMsg] = useState('')
 
-  const handlePay = (method) => {
+  // MERCADO PAGO
+  const handlePayMP = () => {
     createSale(
-      [...cart, { name: `Método: ${method}`, price: 0, qty: 1 }],
+      [...cart, { name: 'Método: Mercado Pago', price: 0, qty: 1 }],
+      total,
+    )
+    clearCart()
+    setShowSuccess(true)
+    // URL OFICIAL QUE SÍ FUNCIONA (sin monto, solo tu alias)
+    const url = `https://www.mercadopago.com.ar/`
+    window.open(url, '_blank')
+  }
+
+  // EFECTIVO
+  const handlePayCash = () => {
+    createSale(
+      [...cart, { name: 'Método: Efectivo', price: 0, qty: 1 }],
       total,
     )
     clearCart()
@@ -148,14 +161,14 @@ export default function Cart() {
         <div className="flex gap-3">
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={() => handlePay('Mercado Pago')}
+            onClick={handlePayMP}
             className="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-orange-500 transition"
           >
             Pagar con Mercado Pago
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={() => handlePay('Efectivo')}
+            onClick={handlePayCash}
             className="bg-gray-700 text-white px-6 py-3 rounded-lg shadow hover:bg-gray-800 transition"
           >
             Pagar en efectivo
